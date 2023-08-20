@@ -105,5 +105,34 @@ namespace AirportTicketBooking.Services
         {
             return Bookings.FirstOrDefault(booking => booking.BookingId == bookingId);
         }
+
+        public void ViewPassengerBookings(string passportNumber)
+        {
+            List<Booking> passengerBookings = GetPassengerBookings(passportNumber);
+
+            if (passengerBookings == null || passengerBookings.Count == 0)
+            {
+                Console.WriteLine("No bookings available.");
+                return;
+            }
+
+            Console.WriteLine("----------------- ViewPassengerBookings ----------------- ");
+            foreach (var booking in passengerBookings)
+            {
+                Console.WriteLine($"Booking ID: {booking.BookingId}");
+                Console.WriteLine($"Flight Number: {booking.FlightNumber}");
+                Console.WriteLine($"Passport Number: {booking.PassportNumber}");
+                Console.WriteLine($"Price: {booking.Price}");
+                Console.WriteLine($"Booking Date: {booking.BookingDate}");
+                Console.WriteLine($"Selected Class: {booking.SelectedClass}");
+                Console.WriteLine();
+            }
+        }
+
+        public List<Booking> GetPassengerBookings(string passportNumber)
+        {
+            List<Booking> filteredBookings = Bookings.Where(booking => booking.PassportNumber == passportNumber).ToList();
+            return filteredBookings;
+        }
     }
 }
