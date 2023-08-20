@@ -134,5 +134,25 @@ namespace AirportTicketBooking.Services
             List<Booking> filteredBookings = Bookings.Where(booking => booking.PassportNumber == passportNumber).ToList();
             return filteredBookings;
         }
+
+        public void PrintAllBookings()
+        {
+            if (Bookings == null || Bookings.Count == 0)
+            {
+                Console.WriteLine("No bookings available.");
+                return;
+            }
+
+            foreach (var booking in Bookings)
+            {
+                Console.WriteLine($"Booking ID: {booking.BookingId}");
+                Console.WriteLine($"Flight Number: {booking.FlightNumber}");
+                Console.WriteLine($"Passport Number: {booking.PassportNumber}");
+                Console.WriteLine($"Price: {booking.Price}");
+                Console.WriteLine($"Booking Date: {booking.BookingDate}");
+                Console.WriteLine($"Selected Class: {booking.SelectedClass}");
+                Console.WriteLine();
+            }
+        }
     }
 }
