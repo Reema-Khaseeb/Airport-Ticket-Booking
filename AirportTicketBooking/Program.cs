@@ -1,65 +1,126 @@
 using Airport_Ticket_Booking;
+using Airport_Ticket_Booking.Enums;
+using Airport_Ticket_Booking.Models;
+using Airport_Ticket_Booking.Services;
+using Airport_Ticket_Booking.Utilities;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Flight flight1 = new(1, "USA", "UK", DateTime.Now.AddDays(7), "JFK", "LHR",
-                       new Dictionary<Flight.TicketClass, double> {
-                           { Flight.TicketClass.Economy, 500.0 },
-                           { Flight.TicketClass.Business, 1000.0 },
-                           { Flight.TicketClass.FirstClass, 1500.0 }
-                       });
+        Console.WriteLine("----------------- ManagerActions ----------------- ");
 
-        Flight flight2 = new(2, "France", "Spain", DateTime.Now.AddDays(14), "CDG", "BCN",
-                       new Dictionary<Flight.TicketClass, double> {
-                           { Flight.TicketClass.Economy, 400.0 },
-                           { Flight.TicketClass.Business, 800.0 },
-                           { Flight.TicketClass.FirstClass, 1200.0 }
-                       });
+        Flight flight1 = new()
+        {
+            FlightNumber = 1,
+            DepartureCountry = "USA",
+            DestinationCountry = "UK",
+            DepartureDate = DateTime.Now.AddDays(7),
+            DepartureAirport = "JFK",
+            ArrivalAirport = "LHR",
+            EconomyPrice = 500.0,
+            BusinessPrice = 1000.0,
+            FirstClassPrice = 1500.0
+        };
 
-        Flight flight3 = new(3, "Germany", "Italy", DateTime.Now.AddDays(21), "FRA", "FCO",
-                       new Dictionary<Flight.TicketClass, double> {
-                           { Flight.TicketClass.Economy, 350.0 },
-                           { Flight.TicketClass.Business, 700.0 },
-                           { Flight.TicketClass.FirstClass, 1100.0 }
-                       });
+        Flight flight2 = new()
+        {
+            FlightNumber = 2,
+            DepartureCountry = "France",
+            DestinationCountry = "Spain",
+            DepartureDate = DateTime.Now.AddDays(14),
+            DepartureAirport = "CDG",
+            ArrivalAirport = "BCN",
+            EconomyPrice = 400.0,
+            BusinessPrice = 800.0,
+            FirstClassPrice = 1200.0
+        };
 
-        List<Flight> initialFlights = new List<Flight>
+        Flight flight3 = new()
+        {
+            FlightNumber = 3,
+            DepartureCountry = "Germany",
+            DestinationCountry = "Italy",
+            DepartureDate = DateTime.Now.AddDays(21),
+            DepartureAirport = "FRA",
+            ArrivalAirport = "FCO",
+            EconomyPrice = 350.0,
+            BusinessPrice = 700.0,
+            FirstClassPrice = 1100.0
+        };
+
+        List<Flight> initialFlights = new()
         {
             flight1, flight2, flight3
         };
 
-
         // ManagerActions initialFlights = new ManagerActions();
-        ManagerActions flights = new ManagerActions(initialFlights);
+        ManagerActions flights = new(initialFlights);
 
         flights.ViewFlights();
 
         Console.WriteLine("\n\n\n\n");
 
-        Flight flight4 = new(4, "Canada", "Japan", DateTime.Now.AddDays(30), "YYZ", "HND",
-                       new Dictionary<Flight.TicketClass, double>
-                       {
-                           { Flight.TicketClass.Economy, 600.0 },
-                           { Flight.TicketClass.Business, 1200.0 },
-                           { Flight.TicketClass.FirstClass, 1800.0 }
-                       });
 
-        Flight flight5 = new(5, "Australia", "New Zealand", DateTime.Now.AddDays(45), "SYD", "AKL",
-                   new Dictionary<Flight.TicketClass, double>
-                   {
-                           { Flight.TicketClass.Economy, 300.0 },
-                           { Flight.TicketClass.Business, 600.0 },
-                           { Flight.TicketClass.FirstClass, 900.0 }
-                   });
-
-        List<Flight> newFlights = new List<Flight>
+        Flight flight4 = new()
         {
-            flight4, flight5
+            FlightNumber = 4,
+            DepartureCountry = "Canada",
+            DestinationCountry = "Japan",
+            DepartureDate = DateTime.Now.AddDays(30),
+            DepartureAirport = "YYZ",
+            ArrivalAirport = "HND",
+            EconomyPrice = 600.0,
+            BusinessPrice = 1200.0,
+            FirstClassPrice = 1800.0
         };
 
-        flights.AddFlights(newFlights);
+        Flight flight5 = new()
+        {
+            FlightNumber = 5,
+            DepartureCountry = "Australia",
+            DestinationCountry = "New Zealand",
+            DepartureDate = DateTime.Now.AddDays(45),
+            DepartureAirport = "SYD",
+            ArrivalAirport = "AKL",
+            EconomyPrice = 300.0,
+            BusinessPrice = 600.0,
+            FirstClassPrice = 900.0
+        };
+
+        Flight flight6 = new()
+        {
+            FlightNumber = 6,
+            DepartureCountry = "Australia",
+            DestinationCountry = "Palestine",
+            DepartureDate = DateTime.Now.AddDays(17),
+            DepartureAirport = "SYD",
+            ArrivalAirport = "HND",
+            EconomyPrice = 400.0,
+            BusinessPrice = 750.0,
+            FirstClassPrice = 1200.0
+        };
+
+        Flight flight7 = new()
+        {
+            FlightNumber = 7,
+            DepartureCountry = "Canada",
+            DestinationCountry = "Palestine",
+            DepartureDate = DateTime.Now.AddDays(6),
+            DepartureAirport = "JFK",
+            ArrivalAirport = "AKL",
+            EconomyPrice = 400.0,
+            BusinessPrice = 750.0,
+            FirstClassPrice = 1200.0
+        };
+
+        List<Flight> newFlights = new()
+        {
+            flight4, flight5, flight6, flight7
+        };
+
+        var userRole = UserRole.Manager;
+        flights.AddFlights(newFlights, userRole);
         flights.ViewFlights();
     }
 }
