@@ -1,7 +1,6 @@
 using Airport_Ticket_Booking.Enums;
 using Airport_Ticket_Booking.Models;
 using Airport_Ticket_Booking.Utilities;
-using Airport_Ticket_Booking.Utilities.Extensions;
 
 namespace Airport_Ticket_Booking.Services
 {
@@ -13,6 +12,12 @@ namespace Airport_Ticket_Booking.Services
         public ManagerActions(List<Flight>? initialFlights = null)
         {
             flights = initialFlights ?? new List<Flight>();
+        }
+
+        public void AddFlights(List<Flight> newFlights, UserRole userRole)
+        {
+            RoleAuthorization.CheckPermission(userRole, UserRole.Manager);
+            flights.AddRange(newFlights);
         }
     }
 }
