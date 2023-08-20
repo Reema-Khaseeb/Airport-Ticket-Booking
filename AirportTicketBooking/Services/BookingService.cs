@@ -78,5 +78,32 @@ namespace AirportTicketBooking.Services
                 Console.WriteLine($"\nBooking {bookingId} has been canceled.\n\n");
             }
         }
+
+        public void ModifyBooking(int bookingId, TicketClass newTicketClass, UserRole userRole)
+        {
+            RoleAuthorization.CheckPermission(userRole, UserRole.Passenger);
+            Booking bookingToModify = GetBookingByBookingId(bookingId);
+
+            if (bookingToModify != null)
+            {
+                double newPrice = CalculatePrice(bookingToModify.FlightNumber, newTicketClass);
+
+                TicketClass oldTicketClass = bookingToModify.SelectedClass;
+                bookingToModify.SelectedClass = newTicketClass;
+                bookingToModify.Price = newPrice;
+
+                Console.WriteLine($"\nBooking {bookingId} Ticket Class modified successfully from " +
+                                  $"'{oldTicketClass}' Class into '{newTicketClass}' Class.\n\n");
+            }
+            else
+            {
+                Console.WriteLine($"Booking with ID {bookingId} not found.\n\n");
+            }
+        }
+
+        private Booking GetBookingByBookingId(int bookingId)
+        {
+            return Bookings.FirstOrDefault(booking => booking.BookingId == bookingId);
+        }
     }
 }
