@@ -30,5 +30,7 @@ namespace Airport_Ticket_Booking.Services
                 ViewFlightConsoleStyler.PrintHorizontalLine();
             }
         }
+
+        public static List<Flight> GetAllFlights() => flights;
     }
 }
