@@ -1,4 +1,5 @@
-﻿using Airport_Ticket_Booking.Enums;
+﻿using Airport_Ticket_Booking;
+using Airport_Ticket_Booking.Enums;
 using Airport_Ticket_Booking.Models;
 using Airport_Ticket_Booking.Services;
 using Airport_Ticket_Booking.Utilities;
@@ -154,5 +155,90 @@ namespace AirportTicketBooking.Services
                 Console.WriteLine();
             }
         }
+
+        public void ViewSearchFlightsResults(List<Flight> searchResults)
+        {
+            if (searchResults == null || searchResults.Count == 0)
+            {
+                Console.WriteLine("No flights found matching the search criteria.");
+                return;
+            }
+
+            foreach (var flight in searchResults)
+            {
+                Console.WriteLine($"Flight Number: {flight.FlightNumber}");
+                Console.WriteLine($"Departure Country: {flight.DepartureCountry}");
+                Console.WriteLine($"Destination Country: {flight.DestinationCountry}");
+                Console.WriteLine($"Departure Date: {flight.DepartureDate}");
+                Console.WriteLine($"Departure Airport: {flight.DepartureAirport}");
+                Console.WriteLine($"Arrival Airport: {flight.ArrivalAirport}");
+                Console.WriteLine($"Economy Price: {flight.EconomyPrice}");
+                Console.WriteLine($"Business Price: {flight.BusinessPrice}");
+                Console.WriteLine($"First Class Price: {flight.FirstClassPrice}");
+                Console.WriteLine();
+            }
+        }
+
+        public void SearchFlights(FlightFilterCriteria criteria)
+        {
+            Console.WriteLine("----------------- PrintSearchResults ----------------- ");
+            List<Flight> flights = ManagerActions.GetAllFlights();
+
+            var query = flights.AsQueryable();
+
+            query = FilterFlightByPriceRange(query, criteria.SpecificPrice, criteria.PriceRangeMin, criteria.PriceRangeMax);
+            query = FilterFlightByDateRange(query, criteria.DepartureDate, 
+                criteria.DepartureDateRangeMin, criteria.DepartureDateRangeMax);
+            query = FilterFlightByString(query, f => f.DepartureCountry, criteria.DepartureCountry);
+            query = FilterFlightByString(query, f => f.DestinationCountry, criteria.DestinationCountry);
+            query = FilterFlightByString(query, f => f.DepartureAirport, criteria.DepartureAirport);
+            query = FilterFlightByString(query, f => f.ArrivalAirport, criteria.ArrivalAirport);
+
+            ViewSearchFlightsResults(query.ToList());
+        }
+        
+        private IQueryable<Flight> FilterFlightByPriceRange(IQueryable<Flight> query, double? specificPrice, double? priceMin, double? priceMax)
+        {
+            if (specificPrice.HasValue)
+            {
+                return query.Where(f => f.EconomyPrice == specificPrice.Value || f.BusinessPrice == specificPrice.Value || f.FirstClassPrice == specificPrice.Value);
+            }
+            else if (priceMin.HasValue || priceMax.HasValue)
+            {
+                priceMin ??= double.MinValue;
+                priceMax ??= double.MaxValue;
+
+                return query.Where(f => f.EconomyPrice >= priceMin.Value && f.EconomyPrice <= priceMax.Value ||
+                                        f.BusinessPrice >= priceMin.Value && f.BusinessPrice <= priceMax.Value ||
+                                        f.FirstClassPrice >= priceMin.Value && f.FirstClassPrice <= priceMax.Value);
+            }
+
+            return query;
+        }
+
+        private IQueryable<Flight> FilterFlightByDateRange(IQueryable<Flight> query, DateTime? specificDate, DateTime? dateMin, DateTime? dateMax)
+        {
+            if (specificDate.HasValue)
+            {
+                return query.Where(f => f.DepartureDate.Date == specificDate.Value.Date);
+            }
+            else if (dateMin.HasValue || dateMax.HasValue)
+            {
+                dateMin ??= DateTime.MinValue;
+                dateMax ??= DateTime.MaxValue;
+
+                return query.Where(f => f.DepartureDate.Date >= dateMin.Value.Date && f.DepartureDate.Date <= dateMax.Value.Date);
+            }
+
+            return query;
+        }
+        
+        private IQueryable<Flight> FilterFlightByString(IQueryable<Flight> query, Func<Flight, string> stringSelector, string value)
+        {
+            return string.IsNullOrEmpty(value) ? query : query
+                .Where(f => stringSelector(f)
+                    .Equals(value, StringComparison.OrdinalIgnoreCase));
+        }
+
     }
 }
