@@ -19,5 +19,16 @@ namespace Airport_Ticket_Booking.Services
             RoleAuthorization.CheckPermission(userRole, UserRole.Manager);
             flights.AddRange(newFlights);
         }
+
+        public void ViewFlights()
+        {
+            ViewFlightConsoleStyler.PrintFlightHeader();
+            ViewFlightConsoleStyler.PrintHorizontalLine();
+            foreach (var flight in flights)
+            {
+                ViewFlightConsoleStyler.PrintFlightRow(flight);
+                ViewFlightConsoleStyler.PrintHorizontalLine();
+            }
+        }
     }
 }
