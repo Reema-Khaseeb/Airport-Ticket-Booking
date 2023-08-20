@@ -61,5 +61,22 @@ namespace AirportTicketBooking.Services
 
             return foundFlight == null ? throw new InvalidOperationException($"Flight with number {flightNumber} not found.") : foundFlight;
         }
+
+        public void CancelBooking(int bookingId, UserRole userRole)
+        {
+            RoleAuthorization.CheckPermission(userRole, UserRole.Passenger);
+
+            Booking bookingToRemove = Bookings.FirstOrDefault(booking => booking.BookingId == bookingId);
+
+            if (bookingToRemove == null)
+            {
+                Console.WriteLine($"\nBooking with ID {bookingId} not found.\n");
+            }
+            else
+            {
+                Bookings.Remove(bookingToRemove);
+                Console.WriteLine($"\nBooking {bookingId} has been canceled.\n\n");
+            }
+        }
     }
 }
