@@ -1,8 +1,6 @@
-using Airport_Ticket_Booking;
 using Airport_Ticket_Booking.Enums;
 using Airport_Ticket_Booking.Models;
 using Airport_Ticket_Booking.Services;
-using Airport_Ticket_Booking.Utilities;
 
 class Program
 {
