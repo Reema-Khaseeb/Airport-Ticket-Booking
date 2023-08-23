@@ -1,9 +1,9 @@
-using Airport_Ticket_Booking;
 using Airport_Ticket_Booking.Enums;
 using Airport_Ticket_Booking.Models;
 using Airport_Ticket_Booking.Services;
-using Airport_Ticket_Booking3.Models;
-using AirportTicketBooking.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+
 
 class Program
 {
@@ -56,8 +56,15 @@ class Program
         };
 
         // ManagerActions initialFlights = new ManagerActions();
-        ManagerActions flights = new(initialFlights);
-
+        
+        
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        IConfiguration configuration = builder.Build();
+        var FlightsFilePath = @"C:\Users\DELL\Documents\GitHub\Airport-Ticket-Booking\AirportTicketBooking\ExistedFlights.csv";
+        ManagerActions flights = new ManagerActions(configuration, FlightsFilePath);
+        
         flights.ViewFlights();
 
         Console.WriteLine("\n\n\n\n");
@@ -121,10 +128,12 @@ class Program
         };
 
         var userRole = UserRole.Manager;
-        flights.AddFlights(newFlights, userRole);
+        var newFlightsFilePath =
+            @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\newFlights.csv";
+        flights.AddFlights(newFlightsFilePath, userRole);
         flights.ViewFlights();
 
-
+        /*
         Console.WriteLine("\n-------------------------------------------------- ");
         Console.WriteLine("----------------- BookingService ----------------- ");
         Console.WriteLine("----------------- ----------------- -----------------\n");
@@ -304,6 +313,6 @@ class Program
             DepartureDateRangeMax = DateTime.Parse("2023-09-03"),
         };
         bookingService.SearchFlights(searchCriteria11);
-
+        */
     }
 }

@@ -1,6 +1,4 @@
-﻿using Airport_Ticket_Booking.Enums;
-
-namespace Airport_Ticket_Booking
+﻿namespace Airport_Ticket_Booking
 {
     public class FlightFilterCriteria
     {
