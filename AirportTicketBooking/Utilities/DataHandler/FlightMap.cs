@@ -1,4 +1,4 @@
-﻿using Airport_Ticket_Booking.Models;
+﻿using AirportTicketBooking.Models;
 using CsvHelper.Configuration;
 
 namespace AirportTicketBooking.Utilities.DataHandler 

@@ -1,4 +1,4 @@
-﻿namespace Airport_Ticket_Booking
+﻿namespace AirportTicketBooking
 {
     public class FlightFilterCriteria
     {
