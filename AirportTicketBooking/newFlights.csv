@@ -1,0 +1,4 @@
+FlightNumber,DepartureCountry,DestinationCountry,DepartureDate,DepartureAirport,ArrivalAirport,EconomyPrice,BusinessPrice,FirstClassPrice
+5,Australia,New Zealand,10/5/2023 14:26,SYD,AKL,300,600,900
+6,Australia,Palestine,9/7/2023 14:26,SYD,HND,400,750,1200
+7,Canada,Palestine,8/27/2023 14:26,JFK,AKL,400,750,1200

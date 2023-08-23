@@ -1,9 +1,7 @@
-using Airport_Ticket_Booking;
 using Airport_Ticket_Booking.Enums;
 using Airport_Ticket_Booking.Models;
 using Airport_Ticket_Booking.Services;
-using Airport_Ticket_Booking3.Models;
-using AirportTicketBooking.Services;
+
 
 class Program
 {
@@ -55,9 +53,10 @@ class Program
             flight1, flight2, flight3
         };
 
-        // ManagerActions initialFlights = new ManagerActions();
-        ManagerActions flights = new(initialFlights);
-
+        var FlightsFilePath =
+            @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\ExistedFlights.csv";
+        ManagerActions flights = new(FlightsFilePath);
+        
         flights.ViewFlights();
 
         Console.WriteLine("\n\n\n\n");
@@ -121,16 +120,18 @@ class Program
         };
 
         var userRole = UserRole.Manager;
-        flights.AddFlights(newFlights, userRole);
+        var newFlightsFilePath =
+            @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\newFlights.csv";
+        flights.AddFlights(newFlightsFilePath, userRole);
         flights.ViewFlights();
 
-
+        /*
         Console.WriteLine("\n-------------------------------------------------- ");
         Console.WriteLine("----------------- BookingService ----------------- ");
         Console.WriteLine("----------------- ----------------- -----------------\n");
 
         userRole = UserRole.Passenger;
-        BookingService bookingService = new BookingService();
+        var bookingService = new BookingService();
 
         bookingService.PrintAllBookings();
 
@@ -197,21 +198,21 @@ class Program
 
 
 
-        int bookingIdToCancel = 3;
+        var bookingIdToCancel = 3;
         bookingService.CancelBooking(bookingIdToCancel, userRole);
 
         bookingService.PrintAllBookings();
 
 
-        int bookingIdToModify = 2;
-        TicketClass newTicketClass = TicketClass.Business;
+        var bookingIdToModify = 2;
+        var newTicketClass = TicketClass.Business;
         bookingService.ModifyBooking(bookingIdToModify, newTicketClass, userRole);
 
         bookingService.PrintAllBookings();
 
 
 
-        string passengerPassportNumber = "ABC123";
+        var passengerPassportNumber = "ABC123";
         bookingService.ViewPassengerBookings(passengerPassportNumber);
         bookingService.ViewPassengerBookings("JKL012");
 
@@ -304,6 +305,6 @@ class Program
             DepartureDateRangeMax = DateTime.Parse("2023-09-03"),
         };
         bookingService.SearchFlights(searchCriteria11);
-
+        */
     }
 }
