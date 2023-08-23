@@ -1,8 +1,6 @@
 using Airport_Ticket_Booking.Enums;
 using Airport_Ticket_Booking.Models;
 using Airport_Ticket_Booking.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 
 
 class Program
@@ -55,15 +53,9 @@ class Program
             flight1, flight2, flight3
         };
 
-        // ManagerActions initialFlights = new ManagerActions();
-        
-        
-        var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-        IConfiguration configuration = builder.Build();
-        var FlightsFilePath = @"C:\Users\DELL\Documents\GitHub\Airport-Ticket-Booking\AirportTicketBooking\ExistedFlights.csv";
-        ManagerActions flights = new ManagerActions(configuration, FlightsFilePath);
+        var FlightsFilePath =
+            @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\ExistedFlights.csv";
+        ManagerActions flights = new(FlightsFilePath);
         
         flights.ViewFlights();
 

@@ -1,10 +1,7 @@
-using Microsoft.Extensions.Configuration;
-using System.IO;
 using Airport_Ticket_Booking.Enums;
 using Airport_Ticket_Booking.Models;
 using Airport_Ticket_Booking.Utilities;
 using AirportTicketBooking.Utilities.DataHandler;
-using System.Configuration;
 
 
 namespace Airport_Ticket_Booking.Services
@@ -13,13 +10,12 @@ namespace Airport_Ticket_Booking.Services
     {
         private static List<Flight> flights;
         //private List<Flight> Flights { get; } = new List<Flight>();
-        private readonly string _systemFlightsDataFilePath;
-
-        private readonly IConfiguration _configuration;
-        public ManagerActions(IConfiguration configuration, string filePath)
+        
+        public ManagerActions(string filePath)
         {
-            _configuration = configuration;
-            _systemFlightsDataFilePath = _configuration["SystemFlightsDataFilePath"];
+            var systemFlightsDataFilePath =
+                @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
+
             if (string.IsNullOrEmpty(filePath))
             {
                 flights = new List<Flight>();
@@ -27,16 +23,21 @@ namespace Airport_Ticket_Booking.Services
             else
             {
                 flights = FileProcessor.ReadFlightsFromCsv(filePath);
-                FileProcessor.WriteFlightsToCsv(_systemFlightsDataFilePath, flights);
+                FileProcessor.WriteFlightsToCsv(systemFlightsDataFilePath, flights);
             }
         }
 
         public void AddFlights(string filePath, UserRole userRole)
         {
-            RoleAuthorization.CheckPermission(userRole, UserRole.Manager);
 
+            RoleAuthorization.CheckPermission(userRole, UserRole.Manager);
+            
+            var systemFlightsDataFilePath =
+                @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
             var newFlights = FileProcessor.ReadFlightsFromCsv(filePath);
-            FileProcessor.WriteFlightsToCsv(_systemFlightsDataFilePath, newFlights);
+            
+            //FileProcessor.WriteFlightsToCsv(_systemFlightsDataFilePath, newFlights);
+            FileProcessor.WriteFlightsToCsv(systemFlightsDataFilePath, newFlights);
             flights.AddRange(newFlights);
         }
 
