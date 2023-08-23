@@ -23,7 +23,7 @@ namespace AirportTicketBooking.Services
         {
             RoleAuthorization.CheckPermission(userRole, UserRole.Passenger);
 
-            double price = CalculatePrice(newBooking.FlightNumber, newBooking.SelectedClass);
+            var price = CalculatePrice(newBooking.FlightNumber, newBooking.SelectedClass);
             newBooking.Price = price;
             newBooking.BookingDate = DateTime.Now;
             newBooking.BookingId = GetNextBookingId();
@@ -32,7 +32,7 @@ namespace AirportTicketBooking.Services
 
         private double CalculatePrice(int flightNumber, TicketClass ticketClass)
         {
-            Flight flight = SearchFlightByFlightNumber(flightNumber);
+            var flight = SearchFlightByFlightNumber(flightNumber);
             double price = 0;
             switch (ticketClass)
             {
@@ -51,13 +51,13 @@ namespace AirportTicketBooking.Services
 
         private int GetNextBookingId()
         {
-            int maxId = Bookings.Count > 0 ? Bookings.Max(b => b.BookingId) : 0;
+            var maxId = Bookings.Count > 0 ? Bookings.Max(b => b.BookingId) : 0;
             return maxId + 1;
         }
 
         private static Flight SearchFlightByFlightNumber(int flightNumber)
-        {//TODO: delete this method. use instead ==> SerchFlight(criteria{flightNumber})
-            Flight foundFlight = ManagerActions.GetAllFlights()
+        {
+            var foundFlight = ManagerActions.GetAllFlights()
                 .FirstOrDefault(flight => flight.FlightNumber == flightNumber);
 
             return foundFlight == null ? throw new InvalidOperationException($"Flight with number {flightNumber} not found.") : foundFlight;
@@ -67,7 +67,7 @@ namespace AirportTicketBooking.Services
         {
             RoleAuthorization.CheckPermission(userRole, UserRole.Passenger);
 
-            Booking bookingToRemove = Bookings.FirstOrDefault(booking => booking.BookingId == bookingId);
+            var bookingToRemove = Bookings.FirstOrDefault(booking => booking.BookingId == bookingId);
 
             if (bookingToRemove == null)
             {
@@ -83,13 +83,13 @@ namespace AirportTicketBooking.Services
         public void ModifyBooking(int bookingId, TicketClass newTicketClass, UserRole userRole)
         {
             RoleAuthorization.CheckPermission(userRole, UserRole.Passenger);
-            Booking bookingToModify = GetBookingByBookingId(bookingId);
+            var bookingToModify = GetBookingByBookingId(bookingId);
 
             if (bookingToModify != null)
             {
-                double newPrice = CalculatePrice(bookingToModify.FlightNumber, newTicketClass);
+                var newPrice = CalculatePrice(bookingToModify.FlightNumber, newTicketClass);
 
-                TicketClass oldTicketClass = bookingToModify.SelectedClass;
+                var oldTicketClass = bookingToModify.SelectedClass;
                 bookingToModify.SelectedClass = newTicketClass;
                 bookingToModify.Price = newPrice;
 
@@ -109,7 +109,7 @@ namespace AirportTicketBooking.Services
 
         public void ViewPassengerBookings(string passportNumber)
         {
-            List<Booking> passengerBookings = GetPassengerBookings(passportNumber);
+            var passengerBookings = GetPassengerBookings(passportNumber);
 
             if (passengerBookings == null || passengerBookings.Count == 0)
             {
@@ -132,7 +132,7 @@ namespace AirportTicketBooking.Services
 
         public List<Booking> GetPassengerBookings(string passportNumber)
         {
-            List<Booking> filteredBookings = Bookings.Where(booking => booking.PassportNumber == passportNumber).ToList();
+            var filteredBookings = Bookings.Where(booking => booking.PassportNumber == passportNumber).ToList();
             return filteredBookings;
         }
 
@@ -182,7 +182,7 @@ namespace AirportTicketBooking.Services
         public void SearchFlights(FlightFilterCriteria criteria)
         {
             Console.WriteLine("----------------- PrintSearchResults ----------------- ");
-            List<Flight> flights = ManagerActions.GetAllFlights();
+            var flights = ManagerActions.GetAllFlights();
 
             var query = flights.AsQueryable();
 
@@ -196,38 +196,39 @@ namespace AirportTicketBooking.Services
 
             ViewSearchFlightsResults(query.ToList());
         }
-        
-        private IQueryable<Flight> FilterFlightByPriceRange(IQueryable<Flight> query, double? specificPrice, double? priceMin, double? priceMax)
-        {
-            if (specificPrice.HasValue)
-            {
-                return query.Where(f => f.EconomyPrice == specificPrice.Value || f.BusinessPrice == specificPrice.Value || f.FirstClassPrice == specificPrice.Value);
-            }
-            else if (priceMin.HasValue || priceMax.HasValue)
-            {
-                priceMin ??= double.MinValue;
-                priceMax ??= double.MaxValue;
 
-                return query.Where(f => f.EconomyPrice >= priceMin.Value && f.EconomyPrice <= priceMax.Value ||
-                                        f.BusinessPrice >= priceMin.Value && f.BusinessPrice <= priceMax.Value ||
-                                        f.FirstClassPrice >= priceMin.Value && f.FirstClassPrice <= priceMax.Value);
+        private IQueryable<Flight> FilterFlightByPriceRange(IQueryable<Flight> query, double specificPrice, double priceMin, double priceMax)
+        {
+            if (specificPrice != default)
+            {
+                return query.Where(f => f.EconomyPrice == specificPrice || f.BusinessPrice == specificPrice || f.FirstClassPrice == specificPrice);
+            }
+            else if (priceMin != default || priceMax != default)
+            {
+                priceMin = priceMin != default ? priceMin : double.MinValue;
+                priceMax = priceMax != default ? priceMax : double.MaxValue;
+
+                return query.Where(f => (f.EconomyPrice >= priceMin && f.EconomyPrice <= priceMax) ||
+                                        (f.BusinessPrice >= priceMin && f.BusinessPrice <= priceMax) ||
+                                        (f.FirstClassPrice >= priceMin && f.FirstClassPrice <= priceMax));
             }
 
             return query;
         }
 
-        private IQueryable<Flight> FilterFlightByDateRange(IQueryable<Flight> query, DateTime? specificDate, DateTime? dateMin, DateTime? dateMax)
-        {
-            if (specificDate.HasValue)
-            {
-                return query.Where(f => f.DepartureDate.Date == specificDate.Value.Date);
-            }
-            else if (dateMin.HasValue || dateMax.HasValue)
-            {
-                dateMin ??= DateTime.MinValue;
-                dateMax ??= DateTime.MaxValue;
 
-                return query.Where(f => f.DepartureDate.Date >= dateMin.Value.Date && f.DepartureDate.Date <= dateMax.Value.Date);
+        private IQueryable<Flight> FilterFlightByDateRange(IQueryable<Flight> query, DateTime specificDate, DateTime dateMin, DateTime dateMax)
+        {
+            if (specificDate != default)
+            {
+                return query.Where(f => f.DepartureDate.Date == specificDate.Date);
+            }
+            else if (dateMin != default || dateMax != default)
+            {
+                dateMin = dateMin != default ? dateMin : DateTime.MinValue;
+                dateMax = dateMax != default ? dateMax : DateTime.MaxValue;
+
+                return query.Where(f => f.DepartureDate.Date >= dateMin.Date && f.DepartureDate.Date <= dateMax.Date);
             }
 
             return query;

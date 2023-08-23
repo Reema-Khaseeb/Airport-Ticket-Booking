@@ -130,7 +130,7 @@ class Program
         Console.WriteLine("----------------- ----------------- -----------------\n");
 
         userRole = UserRole.Passenger;
-        BookingService bookingService = new BookingService();
+        var bookingService = new BookingService();
 
         bookingService.PrintAllBookings();
 
@@ -197,21 +197,21 @@ class Program
 
 
 
-        int bookingIdToCancel = 3;
+        var bookingIdToCancel = 3;
         bookingService.CancelBooking(bookingIdToCancel, userRole);
 
         bookingService.PrintAllBookings();
 
 
-        int bookingIdToModify = 2;
-        TicketClass newTicketClass = TicketClass.Business;
+        var bookingIdToModify = 2;
+        var newTicketClass = TicketClass.Business;
         bookingService.ModifyBooking(bookingIdToModify, newTicketClass, userRole);
 
         bookingService.PrintAllBookings();
 
 
 
-        string passengerPassportNumber = "ABC123";
+        var passengerPassportNumber = "ABC123";
         bookingService.ViewPassengerBookings(passengerPassportNumber);
         bookingService.ViewPassengerBookings("JKL012");
 
