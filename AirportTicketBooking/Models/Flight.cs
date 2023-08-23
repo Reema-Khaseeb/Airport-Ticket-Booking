@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using AirportTicketBooking.Utilities.DataHandler.Validations;
 
-namespace Airport_Ticket_Booking.Models
+namespace AirportTicketBooking.Models
 {
     public class Flight
     {

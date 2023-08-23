@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Airport_Ticket_Booking.Enums;
+using AirportTicketBooking.Enums;
 
-namespace Airport_Ticket_Booking3.Models
+namespace AirportTicketBooking.Models
 {
     public class Booking
     {
