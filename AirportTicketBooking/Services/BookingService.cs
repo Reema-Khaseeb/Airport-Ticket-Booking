@@ -106,24 +106,8 @@ namespace AirportTicketBooking.Services
         public void ViewPassengerBookings(string passportNumber)
         {
             var passengerBookings = GetPassengerBookings(passportNumber);
-
-            if (passengerBookings == null || passengerBookings.Count == 0)
-            {
-                Console.WriteLine("No bookings available.");
-                return;
-            }
-
             Console.WriteLine("----------------- ViewPassengerBookings ----------------- ");
-            foreach (var booking in passengerBookings)
-            {
-                Console.WriteLine($"Booking ID: {booking.BookingId}");
-                Console.WriteLine($"Flight Number: {booking.FlightNumber}");
-                Console.WriteLine($"Passport Number: {booking.PassportNumber}");
-                Console.WriteLine($"Price: {booking.Price}");
-                Console.WriteLine($"Booking Date: {booking.BookingDate}");
-                Console.WriteLine($"Selected Class: {booking.SelectedClass}");
-                Console.WriteLine();
-            }
+            ConsoleUtility.PrintBookings(passengerBookings);
         }
 
         public List<Booking> GetPassengerBookings(string passportNumber)
@@ -132,25 +116,7 @@ namespace AirportTicketBooking.Services
             return filteredBookings;
         }
 
-        public void PrintAllBookings()
-        {
-            if (Bookings == null || Bookings.Count == 0)
-            {
-                Console.WriteLine("No bookings available.");
-                return;
-            }
-
-            foreach (var booking in Bookings)
-            {
-                Console.WriteLine($"Booking ID: {booking.BookingId}");
-                Console.WriteLine($"Flight Number: {booking.FlightNumber}");
-                Console.WriteLine($"Passport Number: {booking.PassportNumber}");
-                Console.WriteLine($"Price: {booking.Price}");
-                Console.WriteLine($"Booking Date: {booking.BookingDate}");
-                Console.WriteLine($"Selected Class: {booking.SelectedClass}");
-                Console.WriteLine();
-            }
-        }
+        public void PrintAllBookings() => ConsoleUtility.PrintBookings(Bookings);
 
         public void ViewSearchFlightsResults(List<Flight> searchResults)
         {
