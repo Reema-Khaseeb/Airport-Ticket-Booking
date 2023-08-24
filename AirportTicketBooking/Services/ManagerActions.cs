@@ -1,9 +1,6 @@
 using AirportTicketBooking.Enums;
 using AirportTicketBooking.Models;
 using AirportTicketBooking.Utilities;
-using AirportTicketBooking.Models;
-using AirportTicketBooking;
-using AirportTicketBooking.Services;
 using AirportTicketBooking.Utilities.DataHandler;
 
 
@@ -13,9 +10,9 @@ namespace AirportTicketBooking.Services
     {
         private static List<Flight> flights;
         
-        public ManagerActions(string filePath)
+        public ManagerActions(string filePath = null)
         {
-            var systemFlightsDataFilePath =
+            const string systemFlightsDataFilePath =
                 @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
 
             if (string.IsNullOrEmpty(filePath))
@@ -34,7 +31,7 @@ namespace AirportTicketBooking.Services
 
             RoleAuthorization.CheckPermission(userRole, UserRole.Manager);
             
-            var systemFlightsDataFilePath =
+            const string systemFlightsDataFilePath =
                 @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
             var newFlights = FileProcessor.ReadFlightsFromCsv(filePath);
             
@@ -55,24 +52,22 @@ namespace AirportTicketBooking.Services
 
         public static List<Flight> GetAllFlights() => flights;
 
-
-
         public void FilterBookings(BookingFilterCriteria criteria)
         {
             List<Booking> bookings = BookingService.GetAllBookings();
             var query = bookings.AsQueryable();
-
-            query = FilterBookingsByPriceRange(query, criteria.SpecificPrice, criteria.PriceRangeMin, criteria.PriceRangeMax);
-            query = FilterBookingsByDateRange(query, criteria.DepartureDate,
-                criteria.DepartureDateRangeMin, criteria.DepartureDateRangeMax);
-            query = FilterBookingsByStringProperty(query, f => f.DepartureCountry, criteria.DepartureCountry);
-            query = FilterBookingsByStringProperty(query, f => f.DestinationCountry, criteria.DestinationCountry);
-            query = FilterBookingsByStringProperty(query, f => f.DepartureAirport, criteria.DepartureAirport);
-            query = FilterBookingsByStringProperty(query, f => f.ArrivalAirport, criteria.ArrivalAirport);
-            query = FilterByPassportNumber(query, b => b.PassportNumber, criteria.PassportNumber);
-            query = FilterBookingsByFlightNumber(query, criteria.FlightNumber);
+            
+            query = query.FilterBookingsByFlightNumber(criteria.FlightNumber);
+            query = query.FilterByPassportNumber(booking => booking.PassportNumber, criteria.PassportNumber);
+            query = query.FilterBookingsByPriceRange(criteria.SpecificPrice, criteria.PriceRangeMin, criteria.PriceRangeMax);
             query = query.FilterByClassType(criteria.TicketClass);
-
+            query = query.FilterBookingsByDateRange(criteria.DepartureDate,
+                criteria.DepartureDateRangeMin, criteria.DepartureDateRangeMax);
+            query = query.FilterBookingsByString(flight => flight.DepartureCountry, criteria.DepartureCountry);
+            query = query.FilterBookingsByString(flight => flight.DestinationCountry, criteria.DestinationCountry);
+            query = query.FilterBookingsByString(flight => flight.DepartureAirport, criteria.DepartureAirport);
+            query = query.FilterBookingsByString(flight => flight.ArrivalAirport, criteria.ArrivalAirport);
+            
             ViewFilteredBookings(query.ToList());
         }
 
@@ -97,69 +92,5 @@ namespace AirportTicketBooking.Services
                 Console.WriteLine();
             }
         }
-
-        private IQueryable<Booking> FilterBookingsByStringProperty(
-        IQueryable<Booking> query,
-        Func<Flight, string> stringSelector,
-        string value)
-        {
-            if (string.IsNullOrEmpty(value)) return query;
-
-            return query.Where(b => flights
-            .Where(f => query.Any(booking => booking.FlightNumber == f.FlightNumber))
-            .Any(f => stringSelector(f).Equals(value, StringComparison.OrdinalIgnoreCase)));
-        }
-
-        private IQueryable<Booking> FilterByPassportNumber<Booking>(IQueryable<Booking> query, Func<Booking, string> stringSelector, string value)
-        {
-            return string.IsNullOrEmpty(value) ? query :
-                query
-                    .Where(item => stringSelector(item)
-                        .Equals(value, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private IQueryable<Booking> FilterBookingsByDateRange(IQueryable<Booking> query, DateTime specificDate, DateTime dateMin, DateTime dateMax)
-        {
-            if (specificDate != default)
-            {
-                return query.Where(b => flights
-                    .Where(f => query.Any(booking => booking.FlightNumber == f.FlightNumber))
-                    .Any(f => f.DepartureDate.Date == specificDate.Date));
-            }
-
-            if (dateMin == default && dateMax == default)
-                return query;
-
-            dateMin = dateMin != default ? dateMin : DateTime.MinValue;
-            dateMax = dateMax != default ? dateMax : DateTime.MaxValue;
-
-            return query.Where(b => flights
-                .Where(f => query.Any(booking => booking.FlightNumber == f.FlightNumber))
-                .Any(f => f.DepartureDate.Date >= dateMin.Date && f.DepartureDate.Date <= dateMax.Date));
-        }
-
-        private IQueryable<Booking> FilterBookingsByPriceRange(IQueryable<Booking> query, double specificPrice, double priceMin, double priceMax)
-        {
-            if (specificPrice != default)
-            {
-                return query.Where(f => f.Price == specificPrice);
-            }
-
-            if (priceMin == default && priceMax == default)
-                return query;
-
-            priceMin = priceMin != default ? priceMin : double.MinValue;
-            priceMax = priceMax != default ? priceMax : double.MaxValue;
-
-            return query.Where(booking => booking
-                .Price >= priceMin && booking.Price <= priceMax);
-        }
-
-        private IQueryable<Booking> FilterBookingsByFlightNumber(IQueryable<Booking> query, int flightNumber)
-        {
-            return flightNumber == default ? query : query.Where(booking => booking.FlightNumber == flightNumber);
-        }
-
-
     }
 }
