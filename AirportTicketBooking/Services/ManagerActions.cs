@@ -41,13 +41,7 @@ namespace AirportTicketBooking.Services
 
         public void ViewFlights()
         {
-            ViewFlightConsoleStyler.PrintFlightHeader();
-            ViewFlightConsoleStyler.PrintHorizontalLine();
-            foreach (var flight in flights)
-            {
-                ViewFlightConsoleStyler.PrintFlightRow(flight);
-                ViewFlightConsoleStyler.PrintHorizontalLine();
-            }
+            ViewFlightConsoleStyler.ViewFlights(flights);
         }
 
         public static List<Flight> GetAllFlights() => flights;

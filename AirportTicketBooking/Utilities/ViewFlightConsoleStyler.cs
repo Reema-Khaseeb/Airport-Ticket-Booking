@@ -41,5 +41,23 @@ namespace AirportTicketBooking.Utilities
                           $"{flight.BusinessPrice,-SmallColumnWidth} | " +
                           $"{flight.FirstClassPrice,-SmallColumnWidth} |");
         }
+
+        public static void ViewFlights(List<Flight> flights)
+        {
+            if (flights == null || flights.Count == 0)
+            {
+                Console.WriteLine("No flights found.");
+                return;
+            }
+
+            PrintFlightHeader();
+            PrintHorizontalLine();
+            foreach (var flight in flights)
+            {
+                PrintFlightRow(flight);
+                PrintHorizontalLine();
+            }
+        }
+
     }
 }

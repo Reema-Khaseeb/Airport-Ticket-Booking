@@ -117,33 +117,10 @@ namespace AirportTicketBooking.Services
         }
 
         public void PrintAllBookings() => ConsoleUtility.PrintBookings(Bookings);
-
-        public void ViewSearchFlightsResults(List<Flight> searchResults)
-        {
-            if (searchResults == null || searchResults.Count == 0)
-            {
-                Console.WriteLine("No flights found matching the search criteria.");
-                return;
-            }
-
-            foreach (var flight in searchResults)
-            {
-                Console.WriteLine($"Flight Number: {flight.FlightNumber}");
-                Console.WriteLine($"Departure Country: {flight.DepartureCountry}");
-                Console.WriteLine($"Destination Country: {flight.DestinationCountry}");
-                Console.WriteLine($"Departure Date: {flight.DepartureDate}");
-                Console.WriteLine($"Departure Airport: {flight.DepartureAirport}");
-                Console.WriteLine($"Arrival Airport: {flight.ArrivalAirport}");
-                Console.WriteLine($"Economy Price: {flight.EconomyPrice}");
-                Console.WriteLine($"Business Price: {flight.BusinessPrice}");
-                Console.WriteLine($"First Class Price: {flight.FirstClassPrice}");
-                Console.WriteLine();
-            }
-        }
-
+        
         public void SearchFlights(FlightFilterCriteria criteria)
         {
-            Console.WriteLine("----------------- PrintSearchResults ----------------- ");
+            Console.WriteLine("\n----------------- PrintSearchResults ----------------- ");
             var flights = ManagerActions.GetAllFlights();
 
             var query = flights.AsQueryable();
@@ -156,7 +133,7 @@ namespace AirportTicketBooking.Services
             query = FilterFlightByString(query, f => f.DepartureAirport, criteria.DepartureAirport);
             query = FilterFlightByString(query, f => f.ArrivalAirport, criteria.ArrivalAirport);
 
-            ViewSearchFlightsResults(query.ToList());
+            ViewFlightConsoleStyler.ViewFlights(query.ToList());
         }
 
         private IQueryable<Flight> FilterFlightByPriceRange(IQueryable<Flight> query, double specificPrice, double priceMin, double priceMax)
