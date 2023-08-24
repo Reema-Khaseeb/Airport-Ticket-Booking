@@ -1,22 +1,41 @@
-using Airport_Ticket_Booking.Enums;
-using Airport_Ticket_Booking.Models;
-using Airport_Ticket_Booking.Utilities;
+using AirportTicketBooking.Enums;
+using AirportTicketBooking.Models;
+using AirportTicketBooking.Utilities;
+using AirportTicketBooking.Utilities.DataHandler;
 
-namespace Airport_Ticket_Booking.Services
+
+namespace AirportTicketBooking.Services
 {
     internal class ManagerActions
     {
         private static List<Flight> flights;
-        //private List<Flight> Flights { get; } = new List<Flight>();
-
-        public ManagerActions(List<Flight>? initialFlights = null)
+        
+        public ManagerActions(string filePath = null)
         {
-            flights = initialFlights ?? new List<Flight>();
+            const string systemFlightsDataFilePath =
+                @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
+
+            if (string.IsNullOrEmpty(filePath))
+            {
+                flights = new List<Flight>();
+            }
+            else
+            {
+                flights = FileProcessor.ReadFlightsFromCsv(filePath);
+                FileProcessor.WriteFlightsToCsv(systemFlightsDataFilePath, flights);
+            }
         }
 
-        public void AddFlights(List<Flight> newFlights, UserRole userRole)
+        public void AddFlights(string filePath, UserRole userRole)
         {
+
             RoleAuthorization.CheckPermission(userRole, UserRole.Manager);
+            
+            const string systemFlightsDataFilePath =
+                @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
+            var newFlights = FileProcessor.ReadFlightsFromCsv(filePath);
+            
+            FileProcessor.WriteFlightsToCsv(systemFlightsDataFilePath, newFlights);
             flights.AddRange(newFlights);
         }
 
@@ -32,5 +51,46 @@ namespace Airport_Ticket_Booking.Services
         }
 
         public static List<Flight> GetAllFlights() => flights;
+
+        public void FilterBookings(BookingFilterCriteria criteria)
+        {
+            List<Booking> bookings = BookingService.GetAllBookings();
+            var query = bookings.AsQueryable();
+            
+            query = query.FilterBookingsByFlightNumber(criteria.FlightNumber);
+            query = query.FilterByPassportNumber(booking => booking.PassportNumber, criteria.PassportNumber);
+            query = query.FilterBookingsByPriceRange(criteria.SpecificPrice, criteria.PriceRangeMin, criteria.PriceRangeMax);
+            query = query.FilterByClassType(criteria.TicketClass);
+            query = query.FilterBookingsByDateRange(criteria.DepartureDate,
+                criteria.DepartureDateRangeMin, criteria.DepartureDateRangeMax);
+            query = query.FilterBookingsByString(flight => flight.DepartureCountry, criteria.DepartureCountry);
+            query = query.FilterBookingsByString(flight => flight.DestinationCountry, criteria.DestinationCountry);
+            query = query.FilterBookingsByString(flight => flight.DepartureAirport, criteria.DepartureAirport);
+            query = query.FilterBookingsByString(flight => flight.ArrivalAirport, criteria.ArrivalAirport);
+            
+            ViewFilteredBookings(query.ToList());
+        }
+
+        public void ViewFilteredBookings(List<Booking> searchResults)
+        {
+            if (searchResults == null || searchResults.Count == 0)
+            {
+                Console.WriteLine("No bookings available.");
+                return;
+            }
+
+            Console.WriteLine("\n ----------  FilterBookings  ------------------");
+
+            foreach (var booking in searchResults)
+            {
+                Console.WriteLine($"Booking ID: {booking.BookingId}");
+                Console.WriteLine($"Flight Number: {booking.FlightNumber}");
+                Console.WriteLine($"Passport Number: {booking.PassportNumber}");
+                Console.WriteLine($"Price: {booking.Price}");
+                Console.WriteLine($"Booking Date: {booking.BookingDate}");
+                Console.WriteLine($"Selected Class: {booking.SelectedClass}");
+                Console.WriteLine();
+            }
+        }
     }
 }

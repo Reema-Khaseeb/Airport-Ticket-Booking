@@ -1,6 +1,6 @@
-﻿using Airport_Ticket_Booking.Enums;
+﻿using AirportTicketBooking.Enums;
 
-namespace Airport_Ticket_Booking.Utilities
+namespace AirportTicketBooking.Utilities
 {
     public static class RoleAuthorization
     {

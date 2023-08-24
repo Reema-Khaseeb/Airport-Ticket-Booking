@@ -1,8 +1,6 @@
-using Airport_Ticket_Booking;
-using Airport_Ticket_Booking.Enums;
-using Airport_Ticket_Booking.Models;
-using Airport_Ticket_Booking.Services;
-using Airport_Ticket_Booking3.Models;
+using AirportTicketBooking;
+using AirportTicketBooking.Enums;
+using AirportTicketBooking.Models;
 using AirportTicketBooking.Services;
 
 class Program
@@ -10,121 +8,22 @@ class Program
     static void Main(string[] args)
     {
         Console.WriteLine("----------------- ManagerActions ----------------- ");
+        
+        var FlightsFilePath =
+            @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\ExistedFlights.csv";
+        ManagerActions managerActions = new(FlightsFilePath);
 
-        Flight flight1 = new()
-        {
-            FlightNumber = 1,
-            DepartureCountry = "USA",
-            DestinationCountry = "UK",
-            DepartureDate = DateTime.Now.AddDays(7),
-            DepartureAirport = "JFK",
-            ArrivalAirport = "LHR",
-            EconomyPrice = 500.0,
-            BusinessPrice = 1000.0,
-            FirstClassPrice = 1500.0
-        };
-
-        Flight flight2 = new()
-        {
-            FlightNumber = 2,
-            DepartureCountry = "France",
-            DestinationCountry = "Spain",
-            DepartureDate = DateTime.Now.AddDays(14),
-            DepartureAirport = "CDG",
-            ArrivalAirport = "BCN",
-            EconomyPrice = 400.0,
-            BusinessPrice = 800.0,
-            FirstClassPrice = 1200.0
-        };
-
-        Flight flight3 = new()
-        {
-            FlightNumber = 3,
-            DepartureCountry = "Germany",
-            DestinationCountry = "Italy",
-            DepartureDate = DateTime.Now.AddDays(21),
-            DepartureAirport = "FRA",
-            ArrivalAirport = "FCO",
-            EconomyPrice = 350.0,
-            BusinessPrice = 700.0,
-            FirstClassPrice = 1100.0
-        };
-
-        List<Flight> initialFlights = new()
-        {
-            flight1, flight2, flight3
-        };
-
-        // ManagerActions initialFlights = new ManagerActions();
-        ManagerActions flights = new(initialFlights);
-
-        flights.ViewFlights();
+        managerActions.ViewFlights();
 
         Console.WriteLine("\n\n\n\n");
 
-
-        Flight flight4 = new()
-        {
-            FlightNumber = 4,
-            DepartureCountry = "Canada",
-            DestinationCountry = "Japan",
-            DepartureDate = DateTime.Now.AddDays(30),
-            DepartureAirport = "YYZ",
-            ArrivalAirport = "HND",
-            EconomyPrice = 600.0,
-            BusinessPrice = 1200.0,
-            FirstClassPrice = 1800.0
-        };
-
-        Flight flight5 = new()
-        {
-            FlightNumber = 5,
-            DepartureCountry = "Australia",
-            DestinationCountry = "New Zealand",
-            DepartureDate = DateTime.Now.AddDays(45),
-            DepartureAirport = "SYD",
-            ArrivalAirport = "AKL",
-            EconomyPrice = 300.0,
-            BusinessPrice = 600.0,
-            FirstClassPrice = 900.0
-        };
-
-        Flight flight6 = new()
-        {
-            FlightNumber = 6,
-            DepartureCountry = "Australia",
-            DestinationCountry = "Palestine",
-            DepartureDate = DateTime.Now.AddDays(17),
-            DepartureAirport = "SYD",
-            ArrivalAirport = "HND",
-            EconomyPrice = 400.0,
-            BusinessPrice = 750.0,
-            FirstClassPrice = 1200.0
-        };
-
-        Flight flight7 = new()
-        {
-            FlightNumber = 7,
-            DepartureCountry = "Canada",
-            DestinationCountry = "Palestine",
-            DepartureDate = DateTime.Now.AddDays(6),
-            DepartureAirport = "JFK",
-            ArrivalAirport = "AKL",
-            EconomyPrice = 400.0,
-            BusinessPrice = 750.0,
-            FirstClassPrice = 1200.0
-        };
-
-        List<Flight> newFlights = new()
-        {
-            flight4, flight5, flight6, flight7
-        };
-
         var userRole = UserRole.Manager;
-        flights.AddFlights(newFlights, userRole);
-        flights.ViewFlights();
+        var newFlightsFilePath =
+            @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\newFlights.csv";
+        managerActions.AddFlights(newFlightsFilePath, userRole);
+        managerActions.ViewFlights();
 
-
+        
         Console.WriteLine("\n-------------------------------------------------- ");
         Console.WriteLine("----------------- BookingService ----------------- ");
         Console.WriteLine("----------------- ----------------- -----------------\n");
@@ -134,7 +33,7 @@ class Program
 
         bookingService.PrintAllBookings();
 
-        // Create individual Booking objects
+        
         Booking booking1 = new()
         {
             FlightNumber = 1,
@@ -184,7 +83,13 @@ class Program
             SelectedClass = TicketClass.FirstClass
         };
 
-        // Add each booking to the BookingService
+        Booking booking8 = new()
+        {
+            FlightNumber = 7,
+            PassportNumber = "DEF456",
+            SelectedClass = TicketClass.Economy
+        };
+
         bookingService.BookFlight(booking1, userRole);
         bookingService.BookFlight(booking2, userRole);
         bookingService.BookFlight(booking3, userRole);
@@ -192,11 +97,12 @@ class Program
         bookingService.BookFlight(booking5, userRole);
         bookingService.BookFlight(booking6, userRole);
         bookingService.BookFlight(booking7, userRole);
+        bookingService.BookFlight(booking8, userRole);
 
         bookingService.PrintAllBookings();
 
 
-
+        
         var bookingIdToCancel = 3;
         bookingService.CancelBooking(bookingIdToCancel, userRole);
 
@@ -305,5 +211,106 @@ class Program
         };
         bookingService.SearchFlights(searchCriteria11);
 
+
+
+
+        
+
+        userRole = UserRole.Manager;
+        
+        
+        Console.WriteLine("\n---- FlightNumber = 1 ---- ");
+        BookingFilterCriteria criteria = new()
+        {
+            FlightNumber = 1
+        };
+        managerActions.FilterBookings(criteria);
+
+        Console.WriteLine("\n---- SpecificPrice = 1200.0 ---- ");
+        BookingFilterCriteria criteria1 = new()
+        {
+            SpecificPrice = 1200.0
+        };
+        managerActions.FilterBookings(criteria1);
+
+        Console.WriteLine("\n---- Price = [200.0, 1000.0] ---- ");
+        BookingFilterCriteria criteria2 = new()
+        {
+            PriceRangeMin = 200.0,
+            PriceRangeMax = 1000.0
+        };
+        managerActions.FilterBookings(criteria2);
+
+        Console.WriteLine("\n---- PassportNumber = JKL012 ---- ");
+        BookingFilterCriteria criteria9 = new()
+        {
+            PassportNumber = "JKL012"
+        };
+        managerActions.FilterBookings(criteria9);
+        
+        Console.WriteLine("\n---- DestinationCountry = \"Palestine\" ---- ");
+        BookingFilterCriteria criteria3 = new()
+        {
+            DestinationCountry = "Palestine"
+        };
+        managerActions.FilterBookings(criteria3);
+
+        Console.WriteLine("\n---- DepartureCountry = 'Australia' ---- ");
+        BookingFilterCriteria criteria4 = new()
+        {
+            DepartureCountry = "Australia"
+        };
+        managerActions.FilterBookings(criteria4);
+
+        Console.WriteLine("\n---- DepartureDate = 2023-09-04 ---- ");
+        BookingFilterCriteria criteria5 = new()
+        {
+            DepartureDate = DateTime.Parse("2023-09-04"),
+        };
+        managerActions.FilterBookings(criteria5);
+
+        Console.WriteLine("\n---- DepartureDate Range = [Now - 2023-09-04] ---- ");
+        BookingFilterCriteria criteria6 = new()
+        {
+            DepartureDateRangeMin = DateTime.Now,
+            DepartureDateRangeMax = DateTime.Parse("2023-09-04")
+        };
+        managerActions.FilterBookings(criteria6);
+        
+        Console.WriteLine("\n---- DepartureAirport = \"SYD\" ---- ");
+        BookingFilterCriteria criteria7 = new()
+        {
+            DepartureAirport = "SYD"
+        };
+        managerActions.FilterBookings(criteria7);
+
+        Console.WriteLine("\n---- ArrivalAirport = 'LHR' ---- ");
+        BookingFilterCriteria criteria8 = new()
+        {
+            ArrivalAirport = "LHR"
+        };
+        managerActions.FilterBookings(criteria8);
+        
+        Console.WriteLine("\n---- TicketClass ---- ");
+        BookingFilterCriteria criteria10 = new()
+        {
+            TicketClass = TicketClass.Economy
+        };
+        managerActions.FilterBookings(criteria10);
+
+
+        BookingFilterCriteria criteria11 = new()
+        {
+            TicketClass = TicketClass.Business
+        };
+        managerActions.FilterBookings(criteria11);
+
+
+        BookingFilterCriteria criteria12 = new()
+        {
+            TicketClass = TicketClass.FirstClass
+        };
+        managerActions.FilterBookings(criteria12);
+        
     }
 }

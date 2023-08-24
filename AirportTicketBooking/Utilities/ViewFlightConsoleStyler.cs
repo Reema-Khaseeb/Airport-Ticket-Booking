@@ -1,6 +1,6 @@
-﻿using Airport_Ticket_Booking.Models;
+﻿using AirportTicketBooking.Models;
 
-namespace Airport_Ticket_Booking.Utilities
+namespace AirportTicketBooking.Utilities
 {
     public static class ViewFlightConsoleStyler
     {

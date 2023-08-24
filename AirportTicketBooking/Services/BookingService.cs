@@ -1,15 +1,11 @@
-﻿using Airport_Ticket_Booking;
-using Airport_Ticket_Booking.Enums;
-using Airport_Ticket_Booking.Models;
-using Airport_Ticket_Booking.Services;
-using Airport_Ticket_Booking.Utilities;
-using Airport_Ticket_Booking3.Models;
+﻿using AirportTicketBooking.Enums;
+using AirportTicketBooking.Models;
+using AirportTicketBooking.Utilities;
 
 namespace AirportTicketBooking.Services
 {
     internal class BookingService
     {
-        //public List<Booking> Bookings { get; private set; }
         private static List<Booking> Bookings { get; set; }
 
         public BookingService(List<Booking>? newBooking = null)
@@ -215,8 +211,7 @@ namespace AirportTicketBooking.Services
 
             return query;
         }
-
-
+        
         private IQueryable<Flight> FilterFlightByDateRange(IQueryable<Flight> query, DateTime specificDate, DateTime dateMin, DateTime dateMax)
         {
             if (specificDate != default)

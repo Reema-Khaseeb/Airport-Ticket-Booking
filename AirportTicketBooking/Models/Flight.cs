@@ -1,27 +1,44 @@
 using System.ComponentModel.DataAnnotations;
+using AirportTicketBooking.Utilities.DataHandler.Validations;
 
-namespace Airport_Ticket_Booking.Models
+namespace AirportTicketBooking.Models
 {
     public class Flight
     {
         [Key]
         public int FlightNumber { get; set; }
-        [Required(ErrorMessage = "A flight's Departure Country is required to proceed!")]
+
+        [Required(ErrorMessage = "Departure Country is required.")]
         public string DepartureCountry { get; set; }
-        [Required(ErrorMessage = "A flight's Destination Country is required to proceed!")]
+
+        [Required(ErrorMessage = "Destination Country is required.")]
         public string DestinationCountry { get; set; }
-        [Required(ErrorMessage = "A flight's Departure Date is required to proceed!")]
-        //TODO: [CurrentDate(ErrorMessage = "departure date must be in the future!")]
+
+        [Required(ErrorMessage = "Departure Date is required.")]
+        [DataType(DataType.DateTime)]
+        [FutureDate(ErrorMessage = "Departure Date must be in the future.")]
         public DateTime DepartureDate { get; set; }
-        [Required(ErrorMessage = "A flight's Departure Airport is required to proceed!")]
+
+        [Required(ErrorMessage = "Departure Airport is required.")]
+        [AirportCode(ErrorMessage = "Departure Airport Code must be three uppercase letters.")]
         public string DepartureAirport { get; set; }
-        [Required(ErrorMessage = "A flight's Arrival Airport is required to proceed!")]
+
+        [Required(ErrorMessage = "Arrival Airport is required.")]
+        [AirportCode(ErrorMessage = "Arrival Airport Code must be three uppercase letters.")]
+        [DifferentAirport(nameof(DepartureAirport),
+            ErrorMessage = "Departure and Arrival Airports cannot be the same.")]
         public string ArrivalAirport { get; set; }
-        [Required(ErrorMessage = "The 'Price' for flight's Economy Class is required to proceed!")]
+
+        [Required(ErrorMessage = "Economy Price is required.")]
+        [Range(0, double.MaxValue, ErrorMessage = "Economy Price must be a non-negative value.")]
         public double EconomyPrice { get; set; }
-        [Required(ErrorMessage = "The 'Price' for flight's Business Class is required to proceed!")]
+
+        [Required(ErrorMessage = "Business Price is required.")]
+        [Range(0, double.MaxValue, ErrorMessage = "Business Price must be a non-negative value.")]
         public double BusinessPrice { get; set; }
-        [Required(ErrorMessage = "The 'Price' for flight's First Class is required to proceed!")]
+
+        [Required(ErrorMessage = "First Class Price is required.")]
+        [Range(0, double.MaxValue, ErrorMessage = "First Class Price must be a non-negative value.")]
         public double FirstClassPrice { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Airport_Ticket_Booking.Enums
+﻿namespace AirportTicketBooking.Enums
 {
     public enum UserRole
     {
