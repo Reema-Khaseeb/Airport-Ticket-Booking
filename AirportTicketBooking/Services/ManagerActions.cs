@@ -73,24 +73,8 @@ namespace AirportTicketBooking.Services
 
         public void ViewFilteredBookings(List<Booking> searchResults)
         {
-            if (searchResults == null || searchResults.Count == 0)
-            {
-                Console.WriteLine("No bookings available.");
-                return;
-            }
-
             Console.WriteLine("\n ----------  FilterBookings  ------------------");
-
-            foreach (var booking in searchResults)
-            {
-                Console.WriteLine($"Booking ID: {booking.BookingId}");
-                Console.WriteLine($"Flight Number: {booking.FlightNumber}");
-                Console.WriteLine($"Passport Number: {booking.PassportNumber}");
-                Console.WriteLine($"Price: {booking.Price}");
-                Console.WriteLine($"Booking Date: {booking.BookingDate}");
-                Console.WriteLine($"Selected Class: {booking.SelectedClass}");
-                Console.WriteLine();
-            }
+            ConsoleUtility.PrintBookings(searchResults);
         }
     }
 }
