@@ -1,9 +1,6 @@
-﻿using AirportTicketBooking;
-using AirportTicketBooking.Enums;
+﻿using AirportTicketBooking.Enums;
 using AirportTicketBooking.Models;
-using AirportTicketBooking.Services;
 using AirportTicketBooking.Utilities;
-using AirportTicketBooking.Models;
 
 namespace AirportTicketBooking.Services
 {
@@ -214,8 +211,7 @@ namespace AirportTicketBooking.Services
 
             return query;
         }
-
-
+        
         private IQueryable<Flight> FilterFlightByDateRange(IQueryable<Flight> query, DateTime specificDate, DateTime dateMin, DateTime dateMax)
         {
             if (specificDate != default)
