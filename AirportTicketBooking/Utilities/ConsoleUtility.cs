@@ -1,9 +1,5 @@
 ﻿using AirportTicketBooking.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AirportTicketBooking.Utilities.Extensions;
 
 namespace AirportTicketBooking.Utilities
 {
@@ -11,7 +7,7 @@ namespace AirportTicketBooking.Utilities
     {
         public static void PrintBookings(List<Booking> bookings)
         {
-            if (bookings == null || bookings.Count == 0)
+            if (!bookings.AnySafe())
             {
                 Console.WriteLine("No bookings available.");
                 return;

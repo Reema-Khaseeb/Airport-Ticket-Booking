@@ -50,12 +50,12 @@ namespace AirportTicketBooking.Utilities.DataHandler
                         }
                     }
 
-                    if (errors.Count == 0)
+                    if (!errors.Any())
                     {
                         csv.WriteRecords(flights);
                     }
                 }
-                if (errors.Count == 0)
+                if (!errors.Any())
                 {
                     Console.WriteLine("Data appended successfully.");
                 }

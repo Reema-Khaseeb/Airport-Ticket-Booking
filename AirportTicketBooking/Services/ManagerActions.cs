@@ -54,7 +54,7 @@ namespace AirportTicketBooking.Services
 
         public void FilterBookings(BookingFilterCriteria criteria)
         {
-            List<Booking> bookings = BookingService.GetAllBookings();
+            var bookings = BookingService.GetAllBookings();
             var query = bookings.AsQueryable();
             
             query = query.FilterBookingsByFlightNumber(criteria.FlightNumber);

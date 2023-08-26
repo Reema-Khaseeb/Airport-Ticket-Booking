@@ -14,7 +14,6 @@ class Program
         ManagerActions managerActions = new(FlightsFilePath);
 
         managerActions.ViewFlights();
-
         Console.WriteLine("\n\n\n\n");
 
         var userRole = UserRole.Manager;
@@ -30,9 +29,7 @@ class Program
 
         userRole = UserRole.Passenger;
         var bookingService = new BookingService();
-
         bookingService.PrintAllBookings();
-
         
         Booking booking1 = new()
         {
@@ -100,33 +97,23 @@ class Program
         bookingService.BookFlight(booking8, userRole);
 
         bookingService.PrintAllBookings();
-
-
         
         var bookingIdToCancel = 3;
         bookingService.CancelBooking(bookingIdToCancel, userRole);
-
         bookingService.PrintAllBookings();
-
 
         var bookingIdToModify = 2;
         var newTicketClass = TicketClass.Business;
         bookingService.ModifyBooking(bookingIdToModify, newTicketClass, userRole);
-
         bookingService.PrintAllBookings();
-
-
 
         var passengerPassportNumber = "ABC123";
         bookingService.ViewPassengerBookings(passengerPassportNumber);
         bookingService.ViewPassengerBookings("JKL012");
 
-
-
         Console.WriteLine("\n---- with no filter ---- ");
         FlightFilterCriteria searchCriteria0 = new() { };
         bookingService.SearchFlights(searchCriteria0);
-
 
         FlightFilterCriteria searchCriteria1 = new()
         {
@@ -137,7 +124,6 @@ class Program
         };
         bookingService.SearchFlights(searchCriteria1);
 
-
         FlightFilterCriteria searchCriteria2 = new()
         {
             DepartureCountry = "Australia",
@@ -145,13 +131,11 @@ class Program
         };
         bookingService.SearchFlights(searchCriteria2);
 
-
         FlightFilterCriteria searchCriteria3 = new()
         {
             DepartureCountry = "Australia",
         };
         bookingService.SearchFlights(searchCriteria3);
-
 
         FlightFilterCriteria searchCriteria4 = new()
         {
@@ -160,8 +144,6 @@ class Program
         };
         bookingService.SearchFlights(searchCriteria4);
 
-
-
         FlightFilterCriteria searchCriteria5 = new()
         {
             PriceRangeMin = 500.0,
@@ -169,13 +151,11 @@ class Program
         };
         bookingService.SearchFlights(searchCriteria5);
 
-
         FlightFilterCriteria searchCriteria8 = new()
         {
             PriceRangeMin = 1200.0,
         };
         bookingService.SearchFlights(searchCriteria8);
-
 
         FlightFilterCriteria searchCriteria6 = new()
         {
@@ -183,13 +163,11 @@ class Program
         };
         bookingService.SearchFlights(searchCriteria6);
 
-
         FlightFilterCriteria searchCriteria7 = new()
         {
             ArrivalAirport = "HND"
         };
         bookingService.SearchFlights(searchCriteria7);
-
 
         FlightFilterCriteria searchCriteria9 = new()
         {
@@ -203,7 +181,6 @@ class Program
         };
         bookingService.SearchFlights(searchCriteria10);
 
-
         FlightFilterCriteria searchCriteria11 = new()
         {
             DepartureDateRangeMin = DateTime.Parse("2023-08-15"),
@@ -211,13 +188,6 @@ class Program
         };
         bookingService.SearchFlights(searchCriteria11);
 
-
-
-
-        
-
-        userRole = UserRole.Manager;
-        
         
         Console.WriteLine("\n---- FlightNumber = 1 ---- ");
         BookingFilterCriteria criteria = new()
@@ -298,19 +268,16 @@ class Program
         };
         managerActions.FilterBookings(criteria10);
 
-
         BookingFilterCriteria criteria11 = new()
         {
             TicketClass = TicketClass.Business
         };
         managerActions.FilterBookings(criteria11);
 
-
         BookingFilterCriteria criteria12 = new()
         {
             TicketClass = TicketClass.FirstClass
         };
-        managerActions.FilterBookings(criteria12);
-        
+        managerActions.FilterBookings(criteria12);        
     }
 }

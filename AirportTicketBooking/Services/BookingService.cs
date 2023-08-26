@@ -26,39 +26,6 @@ namespace AirportTicketBooking.Services
             Bookings.Add(newBooking);
         }
 
-        private double CalculatePrice(int flightNumber, TicketClass ticketClass)
-        {
-            var flight = SearchFlightByFlightNumber(flightNumber);
-            double price = 0;
-            switch (ticketClass)
-            {
-                case TicketClass.Economy:
-                    price = flight.EconomyPrice;
-                    break;
-                case TicketClass.Business:
-                    price = flight.BusinessPrice;
-                    break;
-                case TicketClass.FirstClass:
-                    price = flight.FirstClassPrice;
-                    break;
-            }
-            return price;
-        }
-
-        private int GetNextBookingId()
-        {
-            var maxId = Bookings.Count > 0 ? Bookings.Max(b => b.BookingId) : 0;
-            return maxId + 1;
-        }
-
-        private static Flight SearchFlightByFlightNumber(int flightNumber)
-        {
-            var foundFlight = ManagerActions.GetAllFlights()
-                .FirstOrDefault(flight => flight.FlightNumber == flightNumber);
-
-            return foundFlight == null ? throw new InvalidOperationException($"Flight with number {flightNumber} not found.") : foundFlight;
-        }
-
         public void CancelBooking(int bookingId, UserRole userRole)
         {
             RoleAuthorization.CheckPermission(userRole, UserRole.Passenger);
@@ -120,7 +87,7 @@ namespace AirportTicketBooking.Services
 
         public void ViewSearchFlightsResults(List<Flight> searchResults)
         {
-            if (searchResults == null || searchResults.Count == 0)
+            if (!searchResults.Any())
             {
                 Console.WriteLine("No flights found matching the search criteria.");
                 return;
@@ -200,6 +167,39 @@ namespace AirportTicketBooking.Services
             return string.IsNullOrEmpty(value) ? query : query
                 .Where(f => stringSelector(f)
                     .Equals(value, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private double CalculatePrice(int flightNumber, TicketClass ticketClass)
+        {
+            var flight = SearchFlightByFlightNumber(flightNumber);
+            double price = 0;
+            switch (ticketClass)
+            {
+                case TicketClass.Economy:
+                    price = flight.EconomyPrice;
+                    break;
+                case TicketClass.Business:
+                    price = flight.BusinessPrice;
+                    break;
+                case TicketClass.FirstClass:
+                    price = flight.FirstClassPrice;
+                    break;
+            }
+            return price;
+        }
+
+        private int GetNextBookingId()
+        {
+            var maxId = Bookings.Max(b => b?.BookingId) ?? 0;
+            return maxId + 1;
+        }
+
+        private static Flight SearchFlightByFlightNumber(int flightNumber)
+        {
+            var foundFlight = ManagerActions.GetAllFlights()
+                .FirstOrDefault(flight => flight.FlightNumber == flightNumber);
+
+            return foundFlight == null ? throw new InvalidOperationException($"Flight with number {flightNumber} not found.") : foundFlight;
         }
 
     }
