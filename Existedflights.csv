@@ -1,5 +1,0 @@
-FlightNumber,DepartureCountry,DestinationCountry,DepartureDate,DepartureAirport,ArrivalAirport,EconomyPrice,BusinessPrice,FirstClassPrice
-1,USA,UK,8/28/2023 14:26,JFK,LHR,500,1000,1500
-2,France,Spain,9/4/2023 14:26,CDG,BCN,400,800,1200
-3,Germany,Italy,9/11/2023 14:26,FRA,FCO,350,700,1100
-4,Canada,Japan,9/20/2023 14:26,YYZ,HND,600,1200,1800
