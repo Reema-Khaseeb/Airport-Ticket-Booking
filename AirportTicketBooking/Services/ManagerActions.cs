@@ -8,6 +8,9 @@ namespace AirportTicketBooking.Services
 {
     internal class ManagerActions
     {
+        private const string systemFlightsDataFilePath =
+           @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
+
         private static List<Flight> flights;
         
         public ManagerActions(string filePath = null)
@@ -30,9 +33,6 @@ namespace AirportTicketBooking.Services
         {
 
             RoleAuthorization.CheckPermission(userRole, UserRole.Manager);
-            
-            const string systemFlightsDataFilePath =
-                @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
             var newFlights = FileProcessor.ReadFlightsFromCsv(filePath);
             
             FileProcessor.WriteFlightsToCsv(systemFlightsDataFilePath, newFlights);
