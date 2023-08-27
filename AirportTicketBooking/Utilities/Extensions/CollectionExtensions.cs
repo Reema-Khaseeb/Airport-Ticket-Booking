@@ -4,7 +4,7 @@
     {
         public static bool AnySafe<T>(this IEnumerable<T> collection)
         {
-            return (collection != null) ? collection.Any() : false;
+            return collection?.Any() ?? false;
         }
     }
 }

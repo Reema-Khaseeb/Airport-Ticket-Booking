@@ -25,8 +25,6 @@ namespace AirportTicketBooking.Models
 
         [Required(ErrorMessage = "Arrival Airport is required.")]
         [AirportCode(ErrorMessage = "Arrival Airport Code must be three uppercase letters.")]
-        [DifferentAirport(nameof(DepartureAirport),
-            ErrorMessage = "Departure and Arrival Airports cannot be the same.")]
         public string ArrivalAirport { get; set; }
 
         [Required(ErrorMessage = "Economy Price is required.")]
