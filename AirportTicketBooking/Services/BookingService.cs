@@ -1,10 +1,11 @@
 ﻿using AirportTicketBooking.Enums;
+using AirportTicketBooking.Interfaces;
 using AirportTicketBooking.Models;
 using AirportTicketBooking.Utilities;
 
 namespace AirportTicketBooking.Services
 {
-    internal class BookingService
+    internal class BookingService: IBookingService
     {
         private static List<Booking> Bookings { get; set; }
 
@@ -65,11 +66,6 @@ namespace AirportTicketBooking.Services
             }
         }
 
-        private Booking GetBookingByBookingId(int bookingId)
-        {
-            return Bookings.FirstOrDefault(booking => booking.BookingId == bookingId);
-        }
-
         public void ViewPassengerBookings(string passportNumber)
         {
             var passengerBookings = GetPassengerBookings(passportNumber);
@@ -83,92 +79,13 @@ namespace AirportTicketBooking.Services
             return filteredBookings;
         }
 
-        public void PrintAllBookings() => ConsoleUtility.PrintBookings(Bookings);
-
-        public void ViewSearchFlightsResults(List<Flight> searchResults)
+        public void ViewAllBookings() => ConsoleUtility.PrintBookings(Bookings);
+                
+        private Booking GetBookingByBookingId(int bookingId)
         {
-            if (!searchResults.Any())
-            {
-                Console.WriteLine("No flights found matching the search criteria.");
-                return;
-            }
-
-            foreach (var flight in searchResults)
-            {
-                Console.WriteLine($"Flight Number: {flight.FlightNumber}");
-                Console.WriteLine($"Departure Country: {flight.DepartureCountry}");
-                Console.WriteLine($"Destination Country: {flight.DestinationCountry}");
-                Console.WriteLine($"Departure Date: {flight.DepartureDate}");
-                Console.WriteLine($"Departure Airport: {flight.DepartureAirport}");
-                Console.WriteLine($"Arrival Airport: {flight.ArrivalAirport}");
-                Console.WriteLine($"Economy Price: {flight.EconomyPrice}");
-                Console.WriteLine($"Business Price: {flight.BusinessPrice}");
-                Console.WriteLine($"First Class Price: {flight.FirstClassPrice}");
-                Console.WriteLine();
-            }
-        }
-
-        public void SearchFlights(FlightFilterCriteria criteria)
-        {
-            Console.WriteLine("----------------- PrintSearchResults ----------------- ");
-            var flights = ManagerActions.GetAllFlights();
-
-            var query = flights.AsQueryable();
-
-            query = FilterFlightByPriceRange(query, criteria.SpecificPrice, criteria.PriceRangeMin, criteria.PriceRangeMax);
-            query = FilterFlightByDateRange(query, criteria.DepartureDate, 
-                criteria.DepartureDateRangeMin, criteria.DepartureDateRangeMax);
-            query = FilterFlightByString(query, f => f.DepartureCountry, criteria.DepartureCountry);
-            query = FilterFlightByString(query, f => f.DestinationCountry, criteria.DestinationCountry);
-            query = FilterFlightByString(query, f => f.DepartureAirport, criteria.DepartureAirport);
-            query = FilterFlightByString(query, f => f.ArrivalAirport, criteria.ArrivalAirport);
-
-            ViewSearchFlightsResults(query.ToList());
-        }
-
-        private IQueryable<Flight> FilterFlightByPriceRange(IQueryable<Flight> query, double specificPrice, double priceMin, double priceMax)
-        {
-            if (specificPrice != default)
-            {
-                return query.Where(f => f.EconomyPrice == specificPrice || f.BusinessPrice == specificPrice || f.FirstClassPrice == specificPrice);
-            }
-            else if (priceMin != default || priceMax != default)
-            {
-                priceMin = priceMin != default ? priceMin : double.MinValue;
-                priceMax = priceMax != default ? priceMax : double.MaxValue;
-
-                return query.Where(f => (f.EconomyPrice >= priceMin && f.EconomyPrice <= priceMax) ||
-                                        (f.BusinessPrice >= priceMin && f.BusinessPrice <= priceMax) ||
-                                        (f.FirstClassPrice >= priceMin && f.FirstClassPrice <= priceMax));
-            }
-
-            return query;
+            return Bookings.FirstOrDefault(booking => booking.BookingId == bookingId);
         }
         
-        private IQueryable<Flight> FilterFlightByDateRange(IQueryable<Flight> query, DateTime specificDate, DateTime dateMin, DateTime dateMax)
-        {
-            if (specificDate != default)
-            {
-                return query.Where(f => f.DepartureDate.Date == specificDate.Date);
-            }
-            else if (dateMin != default || dateMax != default)
-            {
-                dateMin = dateMin != default ? dateMin : DateTime.MinValue;
-                dateMax = dateMax != default ? dateMax : DateTime.MaxValue;
-
-                return query.Where(f => f.DepartureDate.Date >= dateMin.Date && f.DepartureDate.Date <= dateMax.Date);
-            }
-
-            return query;
-        }
-        
-        private IQueryable<Flight> FilterFlightByString(IQueryable<Flight> query, Func<Flight, string> stringSelector, string value)
-        {
-            return string.IsNullOrEmpty(value) ? query : query
-                .Where(f => stringSelector(f)
-                    .Equals(value, StringComparison.OrdinalIgnoreCase));
-        }
-
         private double CalculatePrice(int flightNumber, TicketClass ticketClass)
         {
             var flight = SearchFlightByFlightNumber(flightNumber);

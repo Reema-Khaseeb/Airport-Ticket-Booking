@@ -29,7 +29,7 @@ class Program
 
         userRole = UserRole.Passenger;
         var bookingService = new BookingService();
-        bookingService.PrintAllBookings();
+        bookingService.ViewAllBookings();
         
         Booking booking1 = new()
         {
@@ -96,16 +96,16 @@ class Program
         bookingService.BookFlight(booking7, userRole);
         bookingService.BookFlight(booking8, userRole);
 
-        bookingService.PrintAllBookings();
+        bookingService.ViewAllBookings();
         
         var bookingIdToCancel = 3;
         bookingService.CancelBooking(bookingIdToCancel, userRole);
-        bookingService.PrintAllBookings();
+        bookingService.ViewAllBookings();
 
         var bookingIdToModify = 2;
         var newTicketClass = TicketClass.Business;
         bookingService.ModifyBooking(bookingIdToModify, newTicketClass, userRole);
-        bookingService.PrintAllBookings();
+        bookingService.ViewAllBookings();
 
         var passengerPassportNumber = "ABC123";
         bookingService.ViewPassengerBookings(passengerPassportNumber);
@@ -113,7 +113,7 @@ class Program
 
         Console.WriteLine("\n---- with no filter ---- ");
         FlightFilterCriteria searchCriteria0 = new() { };
-        bookingService.SearchFlights(searchCriteria0);
+        managerActions.SearchFlights(searchCriteria0);
 
         FlightFilterCriteria searchCriteria1 = new()
         {
@@ -122,71 +122,77 @@ class Program
             DepartureAirport = "JFK",
             ArrivalAirport = "LHR",
         };
-        bookingService.SearchFlights(searchCriteria1);
+        managerActions.SearchFlights(searchCriteria1);
 
         FlightFilterCriteria searchCriteria2 = new()
         {
             DepartureCountry = "Australia",
             DestinationCountry = "Palestine",
         };
-        bookingService.SearchFlights(searchCriteria2);
+        managerActions.SearchFlights(searchCriteria2);
 
         FlightFilterCriteria searchCriteria3 = new()
         {
             DepartureCountry = "Australia",
         };
-        bookingService.SearchFlights(searchCriteria3);
+        managerActions.SearchFlights(searchCriteria3);
 
         FlightFilterCriteria searchCriteria4 = new()
         {
             SpecificPrice = 300.0,
             DepartureCountry = "Australia",
         };
-        bookingService.SearchFlights(searchCriteria4);
+        managerActions.SearchFlights(searchCriteria4);
 
+        Console.WriteLine("\n---- price = [500, 1200] ---- ");
         FlightFilterCriteria searchCriteria5 = new()
         {
             PriceRangeMin = 500.0,
             PriceRangeMax = 1200.0,
         };
-        bookingService.SearchFlights(searchCriteria5);
+        managerActions.SearchFlights(searchCriteria5);
 
         FlightFilterCriteria searchCriteria8 = new()
         {
             PriceRangeMin = 1200.0,
         };
-        bookingService.SearchFlights(searchCriteria8);
+        managerActions.SearchFlights(searchCriteria8);
 
+        Console.WriteLine("\n---- DepartureAirport = \"JFK\" ---- ");
         FlightFilterCriteria searchCriteria6 = new()
         {
             DepartureAirport = "JFK"
         };
-        bookingService.SearchFlights(searchCriteria6);
+        managerActions.SearchFlights(searchCriteria6);
 
+        Console.WriteLine("\n---- ArrivalAirport = \"HND\" ---- ");
         FlightFilterCriteria searchCriteria7 = new()
         {
             ArrivalAirport = "HND"
         };
-        bookingService.SearchFlights(searchCriteria7);
+        managerActions.SearchFlights(searchCriteria7);
 
+        Console.WriteLine("\n---- SpecificPrice = 350.0 ---- ");
         FlightFilterCriteria searchCriteria9 = new()
         {
-            SpecificPrice = 350.0,
+            SpecificPrice = 350.0
         };
-        bookingService.SearchFlights(searchCriteria9);
+        managerActions.SearchFlights(searchCriteria9);
 
+        Console.WriteLine("\n---- DepartureDate = '2023-09-07' ---- ");
         FlightFilterCriteria searchCriteria10 = new()
         {
-            DepartureDate = DateTime.Parse("2023-09-03"),
+            DepartureDate = DateTime.Parse("2023-09-07")
         };
-        bookingService.SearchFlights(searchCriteria10);
+        managerActions.SearchFlights(searchCriteria10);
 
+        Console.WriteLine("7-9 .... 20-9");
         FlightFilterCriteria searchCriteria11 = new()
         {
-            DepartureDateRangeMin = DateTime.Parse("2023-08-15"),
-            DepartureDateRangeMax = DateTime.Parse("2023-09-03"),
+            DepartureDateRangeMin = DateTime.Parse("2023-09-07"),
+            DepartureDateRangeMax = DateTime.Parse("2023-09-20"),
         };
-        bookingService.SearchFlights(searchCriteria11);
+        managerActions.SearchFlights(searchCriteria11);
 
         
         Console.WriteLine("\n---- FlightNumber = 1 ---- ");
@@ -232,18 +238,18 @@ class Program
         };
         managerActions.FilterBookings(criteria4);
 
-        Console.WriteLine("\n---- DepartureDate = 2023-09-04 ---- ");
+        Console.WriteLine("\n---- DepartureDate = 2023-09-07 ---- ");
         BookingFilterCriteria criteria5 = new()
         {
-            DepartureDate = DateTime.Parse("2023-09-04"),
+            DepartureDate = DateTime.Parse("2023-09-07"),
         };
         managerActions.FilterBookings(criteria5);
 
-        Console.WriteLine("\n---- DepartureDate Range = [Now - 2023-09-04] ---- ");
+        Console.WriteLine("\n---- DepartureDate Range = [Now - 2023-09-20] ---- ");
         BookingFilterCriteria criteria6 = new()
         {
             DepartureDateRangeMin = DateTime.Now,
-            DepartureDateRangeMax = DateTime.Parse("2023-09-04")
+            DepartureDateRangeMax = DateTime.Parse("2023-09-20")
         };
         managerActions.FilterBookings(criteria6);
         

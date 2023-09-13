@@ -1,4 +1,5 @@
 using AirportTicketBooking.Enums;
+using AirportTicketBooking.Interfaces;
 using AirportTicketBooking.Models;
 using AirportTicketBooking.Utilities;
 using AirportTicketBooking.Utilities.DataHandler;
@@ -6,18 +7,15 @@ using AirportTicketBooking.Utilities.DataHandler;
 
 namespace AirportTicketBooking.Services
 {
-    internal class ManagerActions
+    internal class ManagerActions : IManagerActions
     {
         private const string systemFlightsDataFilePath =
            @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
-
         private static List<Flight> flights;
-        
+        private static ManagerActions instance;
+
         public ManagerActions(string filePath = null)
         {
-            const string systemFlightsDataFilePath =
-                @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
-
             if (string.IsNullOrEmpty(filePath))
             {
                 flights = new List<Flight>();
@@ -29,25 +27,29 @@ namespace AirportTicketBooking.Services
             }
         }
 
+        public static ManagerActions Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new ManagerActions();
+                }
+                return instance;
+            }
+        }
+
         public void AddFlights(string filePath, UserRole userRole)
         {
-
             RoleAuthorization.CheckPermission(userRole, UserRole.Manager);
-            var newFlights = FileProcessor.ReadFlightsFromCsv(filePath);
-            
+            var newFlights = FileProcessor.ReadFlightsFromCsv(filePath);            
             FileProcessor.WriteFlightsToCsv(systemFlightsDataFilePath, newFlights);
             flights.AddRange(newFlights);
         }
 
         public void ViewFlights()
         {
-            ViewFlightConsoleStyler.PrintFlightHeader();
-            ViewFlightConsoleStyler.PrintHorizontalLine();
-            foreach (var flight in flights)
-            {
-                ViewFlightConsoleStyler.PrintFlightRow(flight);
-                ViewFlightConsoleStyler.PrintHorizontalLine();
-            }
+            ViewFlightConsoleStyler.ViewFlights(flights);
         }
 
         public static List<Flight> GetAllFlights() => flights;
@@ -58,7 +60,7 @@ namespace AirportTicketBooking.Services
             var query = bookings.AsQueryable();
             
             query = query.FilterBookingsByFlightNumber(criteria.FlightNumber);
-            query = query.FilterByPassportNumber(booking => booking.PassportNumber, criteria.PassportNumber);
+            query = query.FilterByPassportNumber(criteria.PassportNumber); // query = query.FilterByPassportNumber(booking => booking.PassportNumber, criteria.PassportNumber);
             query = query.FilterBookingsByPriceRange(criteria.SpecificPrice, criteria.PriceRangeMin, criteria.PriceRangeMax);
             query = query.FilterByClassType(criteria.TicketClass);
             query = query.FilterBookingsByDateRange(criteria.DepartureDate,
@@ -75,6 +77,39 @@ namespace AirportTicketBooking.Services
         {
             Console.WriteLine("\n ----------  FilterBookings  ------------------");
             ConsoleUtility.PrintBookings(searchResults);
+        }
+
+        public void ViewSearchFlightsResults(List<Flight> searchResults)
+        {
+            if (!searchResults.Any())
+            {
+                Console.WriteLine("No flights found matching the search criteria.");
+                return;
+            }
+
+            ViewFlightConsoleStyler.ViewFlights(searchResults);
+
+            /*
+             foreach (var flight in searchResults)
+            {
+                Console.WriteLine($"Flight Number: {flight.FlightNumber}");
+                Console.WriteLine($"Departure Country: {flight.DepartureCountry}");
+                Console.WriteLine($"Destination Country: {flight.DestinationCountry}");
+                Console.WriteLine($"Departure Date: {flight.DepartureDate}");
+                Console.WriteLine($"Departure Airport: {flight.DepartureAirport}");
+                Console.WriteLine($"Arrival Airport: {flight.ArrivalAirport}");
+                Console.WriteLine($"Economy Price: {flight.EconomyPrice}");
+                Console.WriteLine($"Business Price: {flight.BusinessPrice}");
+                Console.WriteLine($"First Class Price: {flight.FirstClassPrice}");
+                Console.WriteLine();
+            }
+            */
+        }
+
+        public void SearchFlights(FlightFilterCriteria criteria)
+        {
+            var query = FilterFlights.SearchFlights(criteria);
+            ViewSearchFlightsResults(query.ToList());
         }
     }
 }

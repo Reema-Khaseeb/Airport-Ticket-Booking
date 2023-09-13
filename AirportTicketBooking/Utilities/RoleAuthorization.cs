@@ -17,5 +17,4 @@ namespace AirportTicketBooking.Utilities
             return userRole == requiredRole;
         }
     }
-
 }

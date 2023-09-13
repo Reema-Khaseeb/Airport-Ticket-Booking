@@ -9,8 +9,20 @@ namespace AirportTicketBooking.Utilities
         private const int LargeColumnWidth = 15;
         private const int TotalTableWidth = 170;
 
+        public static void ViewFlights(List<Flight> flights)
+        {
+            ViewFlightConsoleStyler.PrintFlightHeader();
+            ViewFlightConsoleStyler.PrintHorizontalLine();
+            foreach (var flight in flights)
+            {
+                ViewFlightConsoleStyler.PrintFlightRow(flight);
+                ViewFlightConsoleStyler.PrintHorizontalLine();
+            }
+        }
+
         public static void PrintFlightHeader()
         {
+            Console.WriteLine();
             Console.WriteLine("Available Flights:");
             Console.WriteLine();
             Console.WriteLine($"| {"Flight No.",-SmallColumnWidth} | " +
@@ -41,5 +53,6 @@ namespace AirportTicketBooking.Utilities
                           $"{flight.BusinessPrice,-SmallColumnWidth} | " +
                           $"{flight.FirstClassPrice,-SmallColumnWidth} |");
         }
+                
     }
 }
