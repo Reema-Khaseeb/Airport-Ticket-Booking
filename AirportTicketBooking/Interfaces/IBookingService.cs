@@ -10,6 +10,8 @@ namespace AirportTicketBooking.Interfaces
         void ModifyBooking(int bookingId, TicketClass newTicketClass, UserRole userRole);
         void ViewPassengerBookings(string passportNumber);
         List<Booking> GetPassengerBookings(string passportNumber);
-        void ViewAllBookings();        
+        void ViewAllBookings();
+        void FilterBookings(BookingFilterCriteria criteria);
+        void ViewFilteredBookings(List<Booking> searchResults);
     }
 }

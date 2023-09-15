@@ -70,10 +70,12 @@ namespace AirportTicketBooking.Utilities
                     case "1":
                         var FlightsFilePath =
                             @"C:\\Users\\DELL\\Documents\\GitHub\\Airport-Ticket-Booking\\AirportTicketBooking\\flights.csv";
-                        ManagerActions managerActions = new(FlightsFilePath);
+                        FlightService flightService = new(FlightsFilePath);
+
+                        var bookingService = new BookingService();
 
                         var filterCriteria = GetFilterCriteria();
-                        managerActions.FilterBookings(filterCriteria);
+                        bookingService.FilterBookings(filterCriteria);
 
                         
                         break;

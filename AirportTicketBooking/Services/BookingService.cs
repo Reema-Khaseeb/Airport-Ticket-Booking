@@ -80,7 +80,19 @@ namespace AirportTicketBooking.Services
         }
 
         public void ViewAllBookings() => ConsoleUtility.PrintBookings(Bookings);
-                
+
+        public void FilterBookings(BookingFilterCriteria criteria)
+        {
+            var query = FilterBookingsUtility.FilterBookings(criteria);
+            ViewFilteredBookings(query.ToList());
+        }
+
+        public void ViewFilteredBookings(List<Booking> searchResults)
+        {
+            Console.WriteLine("\n ----------  FilterBookings  ------------------");
+            ConsoleUtility.PrintBookings(searchResults);
+        }
+
         private Booking GetBookingByBookingId(int bookingId)
         {
             return Bookings.FirstOrDefault(booking => booking.BookingId == bookingId);
@@ -113,7 +125,7 @@ namespace AirportTicketBooking.Services
 
         private static Flight SearchFlightByFlightNumber(int flightNumber)
         {
-            var foundFlight = ManagerActions.GetAllFlights()
+            var foundFlight = FlightService.GetAllFlights()
                 .FirstOrDefault(flight => flight.FlightNumber == flightNumber);
 
             return foundFlight == null ? throw new InvalidOperationException($"Flight with number {flightNumber} not found.") : foundFlight;

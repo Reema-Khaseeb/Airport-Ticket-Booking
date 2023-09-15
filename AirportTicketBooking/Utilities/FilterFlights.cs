@@ -1,10 +1,5 @@
 ﻿using AirportTicketBooking.Models;
 using AirportTicketBooking.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTicketBooking.Utilities
 {
@@ -13,7 +8,6 @@ namespace AirportTicketBooking.Utilities
         public static IQueryable<Flight> SearchFlights(FlightFilterCriteria criteria)
         {
             Console.WriteLine("----------------- PrintSearchResults ----------------- ");
-
             var query = GetQueryableFlights();
 
             query = FilterFlightByPriceRange(query, criteria.SpecificPrice, criteria.PriceRangeMin, criteria.PriceRangeMax);
@@ -26,7 +20,6 @@ namespace AirportTicketBooking.Utilities
 
             return query;
         }
-
 
         public static IQueryable<Flight> FilterFlightByPriceRange(IQueryable<Flight> query, double specificPrice, double priceMin, double priceMax)
         {
@@ -66,21 +59,8 @@ namespace AirportTicketBooking.Utilities
 
         public static IQueryable<Flight> FilterFlightByDateRange(DateTime specificDate, DateTime dateMin, DateTime dateMax)
         {
-            var query = GetQueryableFlights();
-
-            if (specificDate != default)
-            {
-                return query.Where(f => f.DepartureDate.Date == specificDate.Date);
-            }
-            else if (dateMin != default || dateMax != default)
-            {
-                dateMin = dateMin != default ? dateMin : DateTime.MinValue;
-                dateMax = dateMax != default ? dateMax : DateTime.MaxValue;
-
-                return query.Where(f => f.DepartureDate.Date >= dateMin.Date && f.DepartureDate.Date <= dateMax.Date);
-            }
-
-            return query;
+            var query = GetQueryableFlights();                        
+            return FilterFlightByDateRange(query, specificDate, dateMin, dateMax);
         }
 
         public static IQueryable<Flight> FilterFlightByString(IQueryable<Flight> query, Func<Flight, string> stringSelector, string value)
@@ -93,12 +73,10 @@ namespace AirportTicketBooking.Utilities
         public static IQueryable<Flight> FilterFlightByString(Func<Flight, string> stringSelector, string value)
         {
             var query = GetQueryableFlights();
-            return string.IsNullOrEmpty(value) ? query : query
-                .Where(f => stringSelector(f)
-                    .Equals(value, StringComparison.OrdinalIgnoreCase));
+            return FilterFlightByString(query, stringSelector, value);
         }
 
-        public static IQueryable<Flight> GetQueryableFlights() => ManagerActions.GetAllFlights().AsQueryable();
+        private static IQueryable<Flight> GetQueryableFlights() => FlightService.GetAllFlights().AsQueryable();
 
     }
 }
